@@ -88,7 +88,7 @@ end;
 { Translate a Term }
 procedure Term;
 begin
-  EmitLn('MOV ' + GetNum + ', EAX')
+  EmitLn('MOVE ' + GetNum + ', D0')
 end;
 
 { Recognize and Translate an Add }
@@ -96,7 +96,7 @@ procedure Add;
 begin
   Match('+');
   Term;
-  EmitLn('ADD EBX, EAX');
+  EmitLn('ADD D1, D0');
 end;
 
 { Recognize and Translate a Subtract }
@@ -104,8 +104,8 @@ procedure Subtract;
 begin
   Match('-');
   Term;
-  EmitLn('SUB EBX, EAX');
-  EmitLn('NEG EAX');
+  EmitLn('SUB D1, D0');
+  EmitLn('NEG D0');
 end;
 
 { Parse and Translate an Expression }
@@ -113,7 +113,7 @@ procedure Expression;
 begin
   Term;
   while Look in ['+', '-'] do begin
-    EmitLn('MOV EAX, EBX');
+    EmitLn('MOVE D0, D1');
     case Look of
       '+': Add;
       '-': Subtract;

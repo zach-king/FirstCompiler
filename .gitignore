@@ -1,5 +1,6 @@
 *.a
 *.o
+*.exe
 testdir/
 testdir/*
-
+.gitignore
