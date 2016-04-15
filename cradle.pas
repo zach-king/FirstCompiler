@@ -50,6 +50,12 @@ begin
   IsDigit := c in ['0'..'9'];
 end;
 
+{ Recognize an Addop }
+function IsAddop(c: char): boolean;
+begin
+  IsAddop := c in ['+', '-'];
+end;
+
 { Get an Identifier }
 function GetName: char;
 begin

@@ -44,6 +44,12 @@ begin
   IsAlpha := upcase(c) in ['A'..'Z'];
 end;
 
+{ Recognize an Addop }
+function IsAddop(c: char): boolean;
+begin
+  IsAddop := c in ['+', '-'];
+end;
+
 { Recognize a Decimal Digit }
 function IsDigit(c: char): boolean;
 begin
@@ -149,8 +155,11 @@ end;
 { Parse and Translate an Expression }
 procedure Expression;
 begin
-  Term;
-  while Look in ['+', '-'] do begin
+  if IsAddop(Look) then
+    EmitLn('CLR D0')
+  else
+    Term;
+  while IsAddop(Look) do begin
     EmitLn('MOVE D0, -(SP)');
     case Look of
       '+': Add;
