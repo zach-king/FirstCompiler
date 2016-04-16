@@ -1,6 +1,7 @@
 program Cradle;
 { Constant Declarations }
 const TAB = ^I;
+const CR = ^M;
 
 { Variable Declarations }
 var Look: char;             { Lookahead Character }
@@ -189,4 +190,5 @@ end;
 begin
   Init;
   Expression;
+  if Look <> CR then Expected('Newline');
 end.
