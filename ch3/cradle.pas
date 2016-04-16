@@ -103,7 +103,7 @@ begin
     EmitLn('BSR ' + Name);
     end
   else
-    EmitLn('MOVE ' + Name + '(PC), D0')
+    EmitLn('MOVE ' + Name + '(PC),D0')
 end;
 
 { Parse and Translate a Math Factor }
@@ -118,7 +118,7 @@ begin
   else if IsAlpha(Look) then
     Ident
   else
-    EmitLn('MOVE #' + GetNum + ', D0');
+    EmitLn('MOVE #' + GetNum + ',D0');
 end;
 
 { Recognize and Translate a Multiply }
@@ -126,7 +126,7 @@ procedure Multiply;
 begin
   Match('*');
   Factor;
-  EmitLn('MULS (SP)+, D0');
+  EmitLn('MULS (SP)+,D0');
 end;
 
 { Recognize and Translate a Divide }
@@ -134,8 +134,8 @@ procedure Divide;
 begin
   Match('/');
   Factor;
-  EmitLn('MOVE (SP)+, D1');
-  EmitLn('DIVS D1, D0');
+  EmitLn('MOVE (SP)+,D1');
+  EmitLn('DIVS D1,D0');
 end;
 
 { Parse and Translate a Math Term }
@@ -143,7 +143,7 @@ procedure Term;
 begin
   Factor;
   while Look in ['*', '/'] do begin
-    EmitLn('MOVE D0, -(SP)');
+    EmitLn('MOVE D0,-(SP)');
     case Look of
       '*': Multiply;
       '/': Divide;
@@ -157,7 +157,7 @@ procedure Add;
 begin
   Match('+');
   Term;
-  EmitLn('ADD (SP)+, D0');
+  EmitLn('ADD (SP)+,D0');
 end;
 
 { Recognize and Translate a Subtract }
@@ -165,7 +165,7 @@ procedure Subtract;
 begin
   Match('-');
   Term;
-  EmitLn('SUB (SP)+, D0');
+  EmitLn('SUB (SP)+,D0');
   EmitLn('NEG D0');
 end;
 
@@ -177,7 +177,7 @@ begin
   else
     Term;
   while IsAddop(Look) do begin
-    EmitLn('MOVE D0, -(SP)');
+    EmitLn('MOVE D0,-(SP)');
     case Look of
       '+': Add;
       '-': Subtract;
@@ -186,9 +186,20 @@ begin
   end;
 end;
 
+{ Parse and Translate an Assignment Statement }
+procedure Assignment;
+var Name: char;
+begin
+  Name := GetName;
+  Match('=');
+  Expression;
+  EmitLn('LEA ' + Name + '(PC),A0');
+  EmitLn('MOVE D0,(A0)')
+end;
+
 { Main Program }
 begin
   Init;
-  Expression;
+  Assignment;
   if Look <> CR then Expected('Newline');
 end.
